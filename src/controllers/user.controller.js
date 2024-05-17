@@ -37,7 +37,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
   // 1.
   const {fullName, email, username, password } = req.body     // destructure from json-formate
-  console.log("email: ", email);
+  // console.log("email: ", email);
 
 
   // 2.
@@ -119,7 +119,7 @@ const loginUser = asyncHandler( async (req, res) => {
 
   //step 1
   const  {email, username, password} = req.body
-  console.log(email);
+  // console.log(email);
 
   // step 2
   if(!username && !email) {
@@ -183,8 +183,8 @@ const logoutUser = asyncHandler(async(req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined
+      $unset: {
+        refreshToken: 1           // this removes the fields from the document
       }
     },
     {
@@ -397,8 +397,8 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
-        foreignField: "chennel",
-        as: "subscriber"
+        foreignField: "channel",
+        as: "subscribers"
       }
     },
     {
@@ -441,7 +441,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
   ])
 
   if (!channel?.length) {
-    throw new ApiError(404, "chennel does not exists")
+    throw new ApiError(404, "channel does not exists")
   }
 
   return res
